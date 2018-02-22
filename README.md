@@ -1,5 +1,6 @@
 # CS530_Guitar_Tuner
 Group project for CS530 - Systems Programming
+
 Implement a java based guitar tuner onto a Raspberry Pi.
 
 # Sources
