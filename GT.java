@@ -1,5 +1,3 @@
-package gt;
-
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
