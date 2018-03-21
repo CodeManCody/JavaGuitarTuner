@@ -5,8 +5,13 @@ import java.util.*;
 
 public class GT {
     
-    private static final double[] FREQUENCIES = { 174.61, 164.81, 155.56, 146.83, 138.59, 130.81, 123.47, 116.54, 110.00, 103.83, 98.00, 92.50, 87.31, 82.41, 77.78};
-    private static final String[] NAME        = { "F3",    "E3",    "D#",   "D3",    "C#",   "C3",    "B2",    "A#",   "A2",    "G#",   "G2",   "F#",  "F2",   "E2",   "D#"};
+    private static final double[] FREQUENCIES = 
+    {174.61, 164.81, 155.56, 146.83, 138.59, 130.81, 123.47, 116.54, 110.00, 
+     103.83, 98.00, 92.50, 87.31, 82.41, 77.78};
+    
+    private static final String[] NAME = 
+    {"F3", "E3", "D#", "D3", "C#", "C3", "B2", "A#", "A2", "G#", "G2", "F#",
+     "F2", "E2", "D#"};
     
     public static class Graph extends JPanel {
         private java.util.List<Double> points = new ArrayList<Double>();
