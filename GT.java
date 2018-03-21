@@ -6,7 +6,7 @@ import java.util.*;
 public class GT {
     
     private static final double[] FREQUENCIES = { 174.61, 164.81, 155.56, 146.83, 138.59, 130.81, 123.47, 116.54, 110.00, 103.83, 98.00, 92.50, 87.31, 82.41, 77.78};
-    private static final String[] NAME        = { "F",    "E",    "D#",   "D",    "C#",   "C",    "B",    "A#",   "A",    "G#",   "G",   "F#",  "F",   "E",   "D#"};
+    private static final String[] NAME        = { "F3",    "E3",    "D#",   "D3",    "C#",   "C3",    "B2",    "A#",   "A2",    "G#",   "G2",   "F#",  "F2",   "E2",   "D#"};
     
     public static class Graph extends JPanel {
         private java.util.List<Double> points = new ArrayList<Double>();
@@ -204,11 +204,27 @@ public class GT {
             
             if ( sampleLen > 0 ) {
                 double frequency = (format.getSampleRate()/sampleLen);
-                freqLabel.setText(String.format("%.2fhz",frequency));
+                double trueFrequency = frequency;
+                freqLabel.setText(String.format("%.2fhz",trueFrequency));
                 
                 frequency = normaliseFreq(frequency);
                 int note = closestNote(frequency);
-                matchLabel.setText(NAME[note]);
+                
+                if(trueFrequency >= 285 && trueFrequency <= 300)
+                    matchLabel.setText("D4");
+                else if(trueFrequency >= 320 && trueFrequency <= 340)
+                    matchLabel.setText("E4");
+                else if(trueFrequency >= 240 && trueFrequency <= 252)
+                    matchLabel.setText("B3");
+                else if(trueFrequency >= 190 && trueFrequency <= 203)
+                    matchLabel.setText("G3");
+                else if(trueFrequency >= 213 && trueFrequency <= 227)
+                    matchLabel.setText("A3");
+                else if(trueFrequency >= 170 && trueFrequency <= 180)
+                    matchLabel.setText("F3");
+                else
+                    matchLabel.setText(NAME[note]);
+                
                 prevLabel.setText(NAME[note-1]);
                 nextLabel.setText(NAME[note+1]);
                 
