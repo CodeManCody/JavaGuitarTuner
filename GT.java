@@ -96,19 +96,6 @@ public class GT {
         }
     }
     
-    /*
-    private static double normaliseFreq(double hz) {
-        // get hz into a standard range to make things easier to deal with
-        while ( hz < 82.41 ) {
-            hz = 2*hz;
-        }
-        while ( hz > 164.81 ) {
-            hz = 0.5*hz;
-        }
-        return hz;
-    }
-    */
-    
     private static int closestNote(double hz) {
         double minDist = Double.MAX_VALUE;
         int minFreq = -1;
@@ -119,13 +106,12 @@ public class GT {
                 minFreq=i;
             }
         }
-        
         return minFreq;
     }
     
     public static void main(String[] args) throws Exception {
         
-        Font font = new Font("sansserif", Font.PLAIN, 24);
+        Font font = new Font("sansserif", Font.PLAIN, 48);  
         Font bigFont = new Font("sansserif", Font.PLAIN, 48);
         
         JFrame frame = new JFrame("5KTuner");
@@ -147,11 +133,12 @@ public class GT {
         
         java.util.Hashtable labels = new java.util.Hashtable();
         labels.put(0, matchLabel);
-        labels.put(-FREQ_RANGE, nextLabel);
-        labels.put(FREQ_RANGE, prevLabel);
+        labels.put(-FREQ_RANGE, prevLabel);
+        labels.put(FREQ_RANGE, nextLabel);
         freqSlider.setLabelTable(labels);
         freqSlider.setPaintLabels(true);
         freqSlider.setPaintTicks(true);
+        freqSlider.setSnapToTicks(true);
         freqSlider.setMajorTickSpacing(FREQ_RANGE/2);
         freqSlider.setMinorTickSpacing(FREQ_RANGE/8);
         
@@ -211,7 +198,7 @@ public class GT {
                 // change of sign in dx
                 if ( dx < 0 && prevDx > 0 ) {
                     // only look for troughs that drop to less than 10% of peak
-                    if ( diff < (0.1*maxDiff) ) {
+                    if ( diff < (0.2*maxDiff) ) { // ** changed to 20% **
                         graph1.mark(i-1);
                         if ( sampleLen == 0 ) {
                             sampleLen=i-1;
@@ -229,21 +216,20 @@ public class GT {
                 double frequency = (format.getSampleRate()/sampleLen);
                 freqLabel.setText(String.format("%.2fhz",frequency));
                 
-                // frequency = normaliseFreq(frequency);
                 int note = closestNote(frequency);
                 
                 matchLabel.setText(NAME[note]);
-                prevLabel.setText(NAME[note-1]);
-                nextLabel.setText(NAME[note+1]);
+                prevLabel.setText("\u266D");    // "flat" symbol
+                nextLabel.setText("\u266F");    // "sharp" symbol
                 
                 int value = 0;
                 double matchFreq = FREQUENCIES[note];
                 if ( frequency < matchFreq ) {
-                    double prevFreq = FREQUENCIES[note+1];
+                    double prevFreq = FREQUENCIES[note-1];
                     value = (int)(-FREQ_RANGE*(frequency-matchFreq)/(prevFreq-matchFreq));
                 }
                 else {
-                    double nextFreq = FREQUENCIES[note-1];
+                    double nextFreq = FREQUENCIES[note+1];
                     value = (int)(FREQ_RANGE*(frequency-matchFreq)/(nextFreq-matchFreq));
                 }
                 freqSlider.setValue(value);
