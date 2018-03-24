@@ -1,10 +1,12 @@
+
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import TuningLibrary.*;
 
-public class GT {
-    
+public class AllTuner
+{
     private static final double[] FREQUENCIES = 
     {16.35, 17.32, 18.35, 19.45, 20.60, 21.83, 23.12, 24.50, 25.96, 27.50, 29.14,
      30.87, 32.70, 34.65, 36.71, 38.89, 41.20, 43.65, 46.25, 49.00, 51.91, 55.00,
@@ -19,7 +21,7 @@ public class GT {
      4186.01,4434.92,4698.63,4978.03,5274.04,5587.65,5919.91,6271.93,6644.88,
      7040.00,7458.62,7902.13};
     
-    private static final String[] NAME = 
+    private static final String[] NOTES = 
     {"C0","C#","D0","D#","E0","F0","F#","G0","G#","A0","A#","B0","C1","C#","D1",
      "D#","E1","F1","F#","G1","G#","A1","A#","B1","C2","C#","D2","D#","E2","F2",
      "F#","G2","G#","A2","A#","B2","C3","C#","D3","D#","E3","F3","F#","G3","G#",
@@ -29,79 +31,15 @@ public class GT {
      "F#","G7","G#","A7","A#","B7","C8","C#","D8","D#","E8","F8","F#","G8","G#",
      "A8","A#","B8"};
     
-    public static class Graph extends JPanel {
-        private java.util.List<Double> points = new ArrayList<Double>();
-        private java.util.List<Integer> markers = new ArrayList<Integer>();
-        
-        public Graph() {
-            setPreferredSize(new Dimension(320,100));
-        }
-        
-        public synchronized void clear() {
-            points.clear();
-            markers.clear();
-        }
-        
-        public synchronized void add(double value) {
-            points.add(value);
-        }
-        
-        public synchronized void mark(int pos) {
-            markers.add(pos);
-        }
-        
-        public synchronized void paint(Graphics g) {
-            g.setColor(Color.BLACK);
-            
-            double min = Double.MAX_VALUE, max = -Double.MAX_VALUE;
-            for ( double p: points ) {
-                min = Math.min(p, min);
-                max = Math.max(p, max);
-            }
-            
-            double width  = getWidth();
-            double height = getHeight();
-            
-            g.clearRect(0,0,(int)width,(int)height);
-            g.drawRect(0,0,(int)width,(int)height);
-            
-            
-            double prevY = 0, prevX = 0;
-            boolean first = true;
-            
-            int ix = 0;
-            for ( double p: points ) {
-                double y = height - (height*(p-min)/(max-min));
-                double x = (width*ix)/points.size();
-                
-                if ( !first ) {
-                    g.drawLine((int)prevX,(int)prevY,(int)x,(int)y);
-                }
-                
-                first = false;
-                prevY = y;
-                prevX = x;
-                ix++;
-            }
-            
-            double zero = height - (height*(0-min)/(max-min));
-            g.drawLine(0,(int)zero,(int)width,(int)zero);
-            
-            g.setColor(Color.RED);
-            for ( int pos: markers ) {
-                double x = (width*pos)/points.size();
-                g.drawLine((int)x, 0, (int)x, (int)height);
-            }
-            
-        }
-    }
-    
-    private static int closestNote(double hz) {
+    private static int closestNote(double hz)
+    {
         double minDist = Double.MAX_VALUE;
         int minFreq = -1;
-        for ( int i = 0; i < FREQUENCIES.length; i++ ) {
-            double dist = Math.abs(FREQUENCIES[i]-hz);
-            if ( dist < minDist ) {
+        for (int i = 0; i < FREQUENCIES.length; i++) 
+        {
+            double dist = Math.abs(FREQUENCIES[i] - hz);
+            if (dist < minDist) 
+            {
                 minDist=dist;
                 minFreq=i;
             }
@@ -109,12 +47,12 @@ public class GT {
         return minFreq;
     }
     
-    public static void main(String[] args) throws Exception {
-        
+    public static void main(String[] args) throws Exception
+    {
         Font font = new Font("sansserif", Font.PLAIN, 48);  
         Font bigFont = new Font("sansserif", Font.PLAIN, 48);
         
-        JFrame frame = new JFrame("5KTuner");
+        JFrame frame = new JFrame("AllTuner");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         Graph graph1 = new Graph();
@@ -166,11 +104,12 @@ public class GT {
         
         byte[] buffer = new byte[2*1200];
         int[] a = new int[buffer.length/2];
-        
         int n = -1;
-        while ( (n = targetDataLine.read(buffer, 0, buffer.length)) > 0 ) {
-            
-            for ( int i = 0; i < n; i+=2 ) {
+        
+        while ( (n = targetDataLine.read(buffer, 0, buffer.length)) > 0 )
+        {
+            for (int i = 0; i < n; i+= 2)
+            {
                 // convert two bytes into single value
                 int value = (short)((buffer[i]&0xFF) | ((buffer[i+1]&0xFF) << 8));
                 a[i >> 1] = value;
@@ -179,30 +118,28 @@ public class GT {
             double prevDiff = 0;
             double prevDx = 0;
             double maxDiff = 0;
-            
             int sampleLen = 0;
-            
-            
             graph1.clear();
             int len = a.length/2;
-            for ( int i = 0; i < len; i++ ) {
+            
+            for (int i = 0; i < len; i++) 
+            {
                 double diff = 0;
-                for ( int j = 0; j < len; j++ ) {
+                for (int j = 0; j < len; j++) 
                     diff += Math.abs(a[j]-a[i+j]);
-                }
                 
                 graph1.add(diff);
-                
                 double dx = prevDiff-diff;
                 
                 // change of sign in dx
-                if ( dx < 0 && prevDx > 0 ) {
+                if (dx < 0 && prevDx > 0) 
+                {
                     // only look for troughs that drop to less than 10% of peak
-                    if ( diff < (0.2*maxDiff) ) { // ** changed to 20% **
+                    if ( diff < (0.2*maxDiff) )     // ** changed to 20% **
+                    { 
                         graph1.mark(i-1);
-                        if ( sampleLen == 0 ) {
+                        if ( sampleLen == 0 ) 
                             sampleLen=i-1;
-                        }
                     }
                 }
                 
@@ -210,21 +147,24 @@ public class GT {
                 prevDiff=diff;
                 maxDiff=Math.max(diff,maxDiff);
             }
+            
             graph1.repaint();
             
-            if ( sampleLen > 0 ) {
+            if (sampleLen > 0) 
+            {
                 double frequency = (format.getSampleRate()/sampleLen);
                 freqLabel.setText(String.format("%.2fhz",frequency));
-                
                 int note = closestNote(frequency);
                 
-                matchLabel.setText(NAME[note]);
+                matchLabel.setText(NOTES[note]);
                 prevLabel.setText("\u266D");    // "flat" symbol
                 nextLabel.setText("\u266F");    // "sharp" symbol
                 
                 int value = 0;
                 double matchFreq = FREQUENCIES[note];
-                if ( frequency < matchFreq ) {
+                
+                if (frequency < matchFreq) 
+                {
                     double prevFreq = FREQUENCIES[note-1];
                     value = (int)(-FREQ_RANGE*(frequency-matchFreq)/(prevFreq-matchFreq));
                 }
@@ -241,6 +181,7 @@ public class GT {
                 freqSlider.setValue(0);
                 freqLabel.setText("--");
             }
+            
             prevLabel.setSize(prevLabel.getPreferredSize());
             nextLabel.setSize(nextLabel.getPreferredSize());
             matchLabel.setSize(matchLabel.getPreferredSize());
@@ -250,7 +191,7 @@ public class GT {
             
             try { Thread.sleep(250); }catch( Exception e ){}
         }
-    }
     
+    } 
 }
 
