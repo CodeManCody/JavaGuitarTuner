@@ -60,9 +60,9 @@ public class AllTuner
         
         JLabel matchLabel = new JLabel("--");
         matchLabel.setFont(bigFont);
-        JLabel prevLabel = new JLabel("--");
+        JLabel prevLabel = new JLabel("\u266D");    // "flat" symbol
         prevLabel.setFont(font);
-        JLabel nextLabel = new JLabel("--");
+        JLabel nextLabel = new JLabel("\u266F");    // "sharp" symbol
         nextLabel.setFont(font);
         
         int FREQ_RANGE = 128;
@@ -176,8 +176,8 @@ public class AllTuner
             }
             else {
                 matchLabel.setText("--");
-                prevLabel.setText("--");
-                nextLabel.setText("--");
+                prevLabel.setText("\u266D");    // "flat" symbol
+                nextLabel.setText("\u266F");    // "sharp" symbol
                 freqSlider.setValue(0);
                 freqLabel.setText("--");
             }
