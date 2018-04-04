@@ -49,21 +49,23 @@ public class TunerFrame
         {
             TunerCalculator calc = new TunerCalculator();
             TunerData data = new TunerData();
-
+            String[] Notes = data.getNotes();
+            double[] Frequencies = data.getFrequencies();
+            
             freqLabel.setText(String.format("%.2fhz", frequency));
             int note = calc.getClosestNote(frequency);
-            matchLabel.setText(data.getNotes()[note]);
+            matchLabel.setText(Notes[note]);
             int value = 0;
-            double matchFreq = data.getFrequencies()[note];
+            double matchFreq = Frequencies[note];
 
             if (frequency < matchFreq) 
             {
-                double prevFreq = data.getFrequencies()[note - 1];
+                double prevFreq = Frequencies[note - 1];
                 value = (int) (-FREQ_RANGE * (frequency - matchFreq) / (prevFreq - matchFreq));
             } 
             else 
             {
-                double nextFreq = data.getFrequencies()[note + 1];
+                double nextFreq = Frequencies[note + 1];
                 value = (int) (FREQ_RANGE * (frequency - matchFreq) / (nextFreq - matchFreq));
             }
             freqSlider.setValue(value);
