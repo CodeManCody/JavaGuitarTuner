@@ -6,12 +6,13 @@ import Tuner.*;
 
 public class TunerCalculator 
 {
-    double frequency = 0;
-    float sampleRate = 44100;
-    int sampleSizeInBits = 16;
-    int channels = 1;
-    boolean signed = true;
-    boolean bigEndian = false;
+    private double frequency = 0;
+    private float sampleRate = 44100;
+    private int sampleSizeInBits = 16;
+    private int channels = 1;
+    private boolean signed = true;
+    private boolean bigEndian = false;
+    
     AudioFormat format = new AudioFormat(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
     DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, format);
     TargetDataLine targetDataLine;
