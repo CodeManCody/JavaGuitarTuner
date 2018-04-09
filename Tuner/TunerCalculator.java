@@ -37,6 +37,7 @@ public class TunerCalculator
 
     public double getFrequency()
     {
+    	frequency=0;
         try { targetDataLine = (TargetDataLine)AudioSystem.getLine(dataLineInfo); } 
         catch (LineUnavailableException e) 
         {
@@ -58,7 +59,7 @@ public class TunerCalculator
         byte[] buffer = new byte[2*1200];
         int[] a = new int[buffer.length/2];
         int n = -1;
-
+        long pTimeout = System.currentTimeMillis();
         while ( (n = targetDataLine.read(buffer, 0, buffer.length)) > 0 )
         {
             for (int i = 0; i < n; i+= 2)
@@ -102,8 +103,12 @@ public class TunerCalculator
             {
                 frequency = (format.getSampleRate()/sampleLen);
                 targetDataLine.close();
-
                 return frequency;
+            }else if(System.currentTimeMillis()-pTimeout>2000){
+                targetDataLine.close();
+                frequency=0;
+                return frequency;
+
             }
         }
         
