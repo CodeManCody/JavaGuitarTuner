@@ -45,7 +45,7 @@ public class TunerFrame
 
     public void updateFrequency(double frequency) 
     {
-        if (frequency != 0) 
+        if (!(Math.abs(frequency) <= 0.0001)) 
         {
             TunerCalculator calc = new TunerCalculator();
             TunerData data = new TunerData();
