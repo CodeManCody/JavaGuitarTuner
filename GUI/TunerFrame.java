@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class TunerFrame extends javax.swing.JFrame {
     private TunerLibrary tunings = new TunerLibrary();
-    private int FREQ_RANGE = 128;
+    private int FREQ_RANGE = 100000;
     private int GREEN_TEXT_THRESHOLD = FREQ_RANGE / 8;
     
     public TunerFrame() {
@@ -27,7 +27,7 @@ public class TunerFrame extends javax.swing.JFrame {
         sldVariance.setMinimum(-FREQ_RANGE);
         sldVariance.setMaximum(FREQ_RANGE);
         sldVariance.setMajorTickSpacing(FREQ_RANGE / 2);
-        sldVariance.setMinorTickSpacing(FREQ_RANGE / 8);
+        sldVariance.setMinorTickSpacing(FREQ_RANGE / 4);
         populateTunings(cboTunings);
         updateFrequency(0);
         //setExtendedState(java.awt.Frame.MAXIMIZED_BOTH); // start maximized
@@ -121,24 +121,24 @@ public class TunerFrame extends javax.swing.JFrame {
         {
             TunerCalculator calc = new TunerCalculator();
             TunerData data = new TunerData();
-            String[] Notes = data.getNotes();
-            double[] Frequencies = data.getFrequencies();
+            String[] notes = data.getNotes();
+            double[] frequencies = data.getFrequencies();
             
             lblFreq.setText(String.format("%.2fhz", frequency));
             int note = calc.getClosestNote(frequency);
-            lblNote.setText(Notes[note]);
+            lblNote.setText(notes[note]);
             int variance = 0;
-            double matchFreq = Frequencies[note];
+            double matchFreq = frequencies[note];
 
             if (frequency < matchFreq) 
             {
-                double prevFreq = Frequencies[note - 1];
-                variance = (int) (-FREQ_RANGE * (frequency - matchFreq) / (prevFreq - matchFreq));
+                double prevFreq = frequencies[note - 1];
+                variance = (int) (-FREQ_RANGE * (frequency - matchFreq) / ((prevFreq - matchFreq)/2));
             } 
             else 
             {
-                double nextFreq = Frequencies[note + 1];
-                variance = (int) (FREQ_RANGE * (frequency - matchFreq) / (nextFreq - matchFreq));
+                double nextFreq = frequencies[note + 1];
+                variance = (int) (FREQ_RANGE * (frequency - matchFreq) / ((nextFreq - matchFreq)/2));   
             }
             
             sldVariance.setValue(variance);
