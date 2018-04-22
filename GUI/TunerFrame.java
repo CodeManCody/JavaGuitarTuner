@@ -10,6 +10,8 @@ public class TunerFrame extends javax.swing.JFrame {
     private int GREEN_TEXT_THRESHOLD = FREQ_RANGE / 8;
     
     public TunerFrame() {
+
+        this.setUndecorated(true);
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
                 if ("Nimbus".equals(info.getName())) {
@@ -30,8 +32,12 @@ public class TunerFrame extends javax.swing.JFrame {
         sldVariance.setMinorTickSpacing(FREQ_RANGE / 4);
         populateTunings(cboTunings);
         updateFrequency(0);
-        //setExtendedState(java.awt.Frame.MAXIMIZED_BOTH); // start maximized
+        setExtendedState(java.awt.Frame.MAXIMIZED_BOTH); // start maximized
+        this.setExtendedState(java.awt.DisplayMode.BIT_DEPTH_MULTI);
+        this.setExtendedState(java.awt.DisplayMode.REFRESH_RATE_UNKNOWN);
         this.setVisible(true);
+        setBounds(getGraphicsConfiguration().getBounds());
+        getGraphicsConfiguration().getDevice().setFullScreenWindow(this);
     }
 
     @SuppressWarnings("unchecked")
