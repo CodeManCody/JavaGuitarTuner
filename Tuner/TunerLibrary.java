@@ -11,7 +11,7 @@ public class TunerLibrary {
         tunings.put("Guitar - D Standard", "D G C F A D");
         tunings.put("Guitar - Drop D", "D A D G B E");
         tunings.put("Guitar - Drop C", "C G C F A D");
-        tunings.put("Bass - Standard", "B E A D G C");
+        tunings.put("Bass - Standard", "E A D G");
     }
     
     public LinkedHashMap<String,String> getTunings() {
